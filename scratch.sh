@@ -4,8 +4,13 @@ scratch() {
   local name folder
 
   __scratch_rand_char() {
-    local rand_index=$((${RANDOM} % $# + 1))
+    local rand_number=$(__scratch_rand_number)
+    local rand_index=$(( $rand_number % $# + 1 ))
     eval "printf %s \${$rand_index}"
+  }
+  __scratch_rand_number() {
+    number=$(od -An -tu -N2 /dev/urandom)
+    printf %s $number
   }
 
   __scratch_rand_word() {
@@ -33,6 +38,7 @@ scratch() {
     fi
 
     name=scratch-$(__scratch_rand_word)
+
     cd $folder
     mkdir -p $name
     cd $name
@@ -41,4 +47,5 @@ scratch() {
 
   unset -f __scratch_rand_char
   unset -f __scratch_rand_word
+  unset -f __scratch_rand_number
 }
