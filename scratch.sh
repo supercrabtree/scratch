@@ -20,12 +20,9 @@ scratch() {
     printf %s $word
   }
 
-  if [ $# -eq 0 ]; then
-    if [ -z "$SCRATCHES_FOLDER" ]; then
-      folder="$HOME/scratches"
-    else
-      folder="$SCRATCHES_FOLDER"
-    fi
+
+  # set scratch folder, and ensure we can write to it
+  folder=${SCRATCHES_FOLDER:-"$HOME/scratches"}
 
     # if its a dir, and writable by the current process
     if [ -d "${folder}" ]; then
