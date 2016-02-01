@@ -9,8 +9,7 @@ scratch() {
     eval "printf %s \${$rand_index}"
   }
   __scratch_rand_number() {
-    number=$(od -An -tu -N2 /dev/urandom)
-    printf %s $number
+    printf %s $(od -An -tu -N2 /dev/urandom)
   }
 
   __scratch_rand_word() {
