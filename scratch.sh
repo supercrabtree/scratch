@@ -46,9 +46,18 @@ scratch() {
     cd $name
   fi
 
+  # if `scratch install`
+  if [ "$1" = "install" ]; then
+    # Check to make sure the next parameter has also been supplied
+    if [ "$#" -eq 1 ];then
+      printf '%s\n' "What do you want to install? (You need another parameter)"
+      return 1
+    fi
+    local to_install=$2
   fi
 
   unset -f __scratch_rand_char
   unset -f __scratch_rand_word
   unset -f __scratch_rand_number
 }
+
