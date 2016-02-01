@@ -1,13 +1,14 @@
 #!/bin/sh
 
 scratch() {
-  local name folder
 
+  # define local functions to be used in the script (unset at the end)
   __scratch_rand_char() {
     local rand_number=$(__scratch_rand_number)
     local rand_index=$(( $rand_number % $# + 1 ))
     eval "printf %s \${$rand_index}"
   }
+
   __scratch_rand_number() {
     printf %s $(od -An -tu -N2 /dev/urandom)
   }
@@ -20,6 +21,8 @@ scratch() {
     printf %s $word
   }
 
+  # define varibles to be used in the script
+  local name folder
 
   # set scratch folder, and ensure we can write to it
   folder=${SCRATCHES_FOLDER:-"$HOME/scratches"}
