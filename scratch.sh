@@ -21,6 +21,29 @@ scratch() {
     printf %s $word
   }
 
+  __scratch_create_remote_addresses() {
+    # the following styles will all result in the two remote addresses
+    # http://github.com/supercrabtree/kerpow.git
+    # git@github.com:supercrabtree/kerpow.git
+    #
+    # scratch install kerpow
+    # scratch install supercrabtree/kerpow
+    # scratch install http://github.com/supercrabtree/kerpow
+    # scratch install git@github.com:supercrabtree/kerpow.git
+    # scratch install https://github.com/supercrabtree/kerpow.git
+    # scratch install http://github.com/supercrabtree/kerpow.git
+    local ssh_address http_address
+
+    # scratch install supercrabtree/kerpow
+    local github_repo=$(printf %s $1 | awk '/^[0-9a-z]*\/[0-9a-z]*$/')
+    if [ -n "$github_repo" ];then
+      ssh_address="git@github.com:$github_repo.git"
+      http_address="https://github.com/$github_repo.git"
+      printf '%s %s' $ssh_address $http_address
+      return 0
+    fi
+  }
+
   # define varibles to be used in the script
   local name folder
 
@@ -53,7 +76,11 @@ scratch() {
       printf '%s\n' "What do you want to install? (You need another parameter)"
       return 1
     fi
+
+    # try to find remote addresses
     local to_install=$2
+    printf '%s %s\n' $(__scratch_create_remote_addresses $to_install)
+
   fi
 
   unset -f __scratch_rand_char
