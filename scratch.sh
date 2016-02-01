@@ -73,7 +73,7 @@ scratch() {
   if [ "$1" = "install" ]; then
     # Check to make sure the next parameter has also been supplied
     if [ "$#" -eq 1 ];then
-      printf '%s\n' "What do you want to install? (You need another parameter)"
+      printf '%s\n' "Erm, what do you want to install? (You need another parameter)"
       return 1
     fi
 
