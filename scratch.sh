@@ -27,14 +27,16 @@ scratch() {
   # set scratch folder, and ensure we can write to it
   folder=${SCRATCHES_FOLDER:-"$HOME/scratches"}
 
-    # if its a dir, and writable by the current process
-    if [ -d "${folder}" ]; then
-      if [ ! -w "${folder}" ]; then
-        printf "\n\033[1;32mYour scratches folder\033[0m %s\033[1;32m is not writable.\033[0m\n" $folder
-        printf "  chmod +x %s\n" $folder
-        return 1
-      fi
+  # if its a dir, and writable by this process
+  if [ -d "${folder}" ]; then
+    if [ ! -w "${folder}" ]; then
+      printf "\n\033[1;32mYour scratches folder\033[0m %s\033[1;32m is not writable.\033[0m\n" $folder
+      printf "  chmod +x %s\n" $folder
+      return 1
     fi
+  else
+    printf "\n\033[1;32mYour scratches folder\033[0m %s\033[1;32m defined by environment varible SCRATCHES_FOLDER is not a directory\033[0m\n" $folder
+  fi
 
     name=scratch-$(__scratch_rand_word)
 
