@@ -34,6 +34,20 @@ scratch() {
     # scratch install http://github.com/supercrabtree/kerpow.git
     local ssh_address http_address
 
+    # did they pass in an http or https git repo address
+    local repo=$(printf %s $to_install | awk '/^http(s)?\:\/\/.*\.git$/')
+    if [ -n "$repo" ];then
+      printf '%s %s' "" $repo
+      return 0
+    fi
+
+    # did they pass in an http or https git repo address
+    local repo=$(printf %s $to_install | awk '/^git@.*\.git$/')
+    if [ -n "$repo" ];then
+      printf '%s %s' $repo ""
+      return 0
+    fi
+
     # scratch install supercrabtree/kerpow
     local github_repo=$(printf %s $1 | awk '/^[0-9a-z]*\/[0-9a-z]*$/')
     if [ -n "$github_repo" ];then
