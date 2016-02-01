@@ -2,7 +2,9 @@
 
 scratch() {
 
+
   # define local functions to be used in the script (unset at the end)
+  # ----------------------------------------------------------------------------
   __scratch_rand_char() {
     local rand_number=$(__scratch_rand_number)
     local rand_index=$(( $rand_number % $# + 1 ))
@@ -69,11 +71,16 @@ scratch() {
       printf '%s %s' $ssh_address $http_address
       return 0
     fi
-
   }
 
+
   # define varibles to be used in the script
+  # ----------------------------------------------------------------------------
   local name folder
+
+
+  # run script
+  # ----------------------------------------------------------------------------
 
   # set scratch folder, and ensure we can write to it
   folder=${SCRATCHES_FOLDER:-"$HOME/scratches"}
@@ -105,8 +112,8 @@ scratch() {
       return 1
     fi
 
-    # try to find remote addresses
     local to_install=$2
+
     printf '%s %s\n' $(__scratch_create_remote_addresses $to_install)
 
   fi
