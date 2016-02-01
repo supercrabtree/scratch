@@ -50,6 +50,17 @@ scratch() {
       return 0
     fi
 
+    # scratch install kerpow
+    local user_github_repo=$(printf %s $1 | awk '/^[0-9a-z]*$/')
+    if [ -n "$user_github_repo" ];then
+      # TODO: workout how to get their github username
+      git_hub_user_name="<github-username>"
+      ssh_address="git@github.com:$git_hub_user_name/$user_github_repo.git"
+      http_address="https://github.com/$git_hub_user_name/$user_github_repo.git"
+      printf '%s %s' $ssh_address $http_address
+      return 0
+    fi
+
     # scratch install supercrabtree/kerpow
     local github_repo=$(printf %s $1 | awk '/^[0-9a-z]*\/[0-9a-z]*$/')
     if [ -n "$github_repo" ];then
