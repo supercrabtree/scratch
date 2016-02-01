@@ -42,6 +42,20 @@ scratch() {
       printf '%s %s' $ssh_address $http_address
       return 0
     fi
+
+    # scratch install http://github.com/supercrabtree/kerpow
+    local repo=$(printf %s $1 | awk '/^http(s)?\:\/\/[0-9a-z]/')
+    if [ -n "$repo" ];then
+      # remove any trailing slashes
+      repo=$(printf %s $1 | sed 's/\/*$//')
+      # strip off http:// or https:// or http://www. or http://www.
+      local stripped_repo=$(printf %s $repo | sed 's/https*\:\/\/w*\.*//')
+      ssh_address="git@$(printf %s $stripped_repo | sed 's/\//:/').git"
+      http_address="$repo.git"
+      printf '%s %s' $ssh_address $http_address
+      return 0
+    fi
+
   }
 
   # define varibles to be used in the script
