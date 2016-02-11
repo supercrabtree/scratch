@@ -28,6 +28,10 @@ scratch() {
     printf %s $word
   }
 
+  __git_version_at_least() {
+    local minor_git_version=$(git --version | sed 's/\(git version \)\([0-9]*\.[0-9]*\)\(.*\)/\2/')
+    echo "$1 < ${minor_git_version}" | bc
+  }
   __scratch_create_remote_addresses() {
     # the following styles will all result in the two remote addresses
     # http://github.com/supercrabtree/kerpow.git
