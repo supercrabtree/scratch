@@ -3,6 +3,11 @@
 scratch() {
 
 
+  # define varibles to be used in the script
+  # ----------------------------------------------------------------------------
+  local name folder to_install protocol git_minor_version
+
+
   # define local functions to be used in the script (unset at the end)
   # ----------------------------------------------------------------------------
   __rand_char() {
