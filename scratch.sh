@@ -5,21 +5,21 @@ scratch() {
 
   # define local functions to be used in the script (unset at the end)
   # ----------------------------------------------------------------------------
-  __scratch_rand_char() {
-    local rand_number=$(__scratch_rand_number)
+  __rand_char() {
+    local rand_number=$(__rand_number)
     local rand_index=$(( $rand_number % $# + 1 ))
     eval "printf %s \${$rand_index}"
   }
 
-  __scratch_rand_number() {
+  __rand_number() {
     printf %s $(od -An -tu -N2 /dev/urandom)
   }
 
-  __scratch_rand_word() {
+  __rand_word() {
     local word
-    word=$word$(__scratch_rand_char qu wh w r t y p ph d dr f g gr h j k kn l z c ch v b bl n m)
-    word=$word$(__scratch_rand_char a ai e ee ei ie oo o u)
-    word=$word$(__scratch_rand_char w r t y p s d ff g h k l c b n m)
+    word=$word$(__rand_char qu wh w r t y p ph d dr f g gr h j k kn l z c ch v b bl n m)
+    word=$word$(__rand_char a ai e ee ei ie oo o u)
+    word=$word$(__rand_char w r t y p s d ff g h k l c b n m)
     printf %s $word
   }
 
@@ -109,7 +109,7 @@ scratch() {
 
   # if no parameters supplied
   if [ "$#" -eq 0 ]; then
-    name=scratch-$(__scratch_rand_word)
+    name=scratch-$(__rand_word)
     cd $folder
     mkdir -p $name
     cd $name
@@ -135,8 +135,8 @@ scratch() {
     fi
   fi
 
-  unset -f __scratch_rand_char
-  unset -f __scratch_rand_word
-  unset -f __scratch_rand_number
+  unset -f __rand_char
+  unset -f __rand_word
+  unset -f __rand_number
 }
 
