@@ -111,13 +111,14 @@ scratch() {
 
   # if `scratch install`
   if [ "$1" = "install" ]; then
+
+    local to_install=$2
+
     # Check to make sure the next parameter has also been supplied
     if [ "$#" -eq 1 ];then
       printf '%s\n' "Erm, what do you want to install? (You need another parameter)"
       return 1
     fi
-
-    local to_install=$2
 
     # if to_install is a local path
     if [ -d $to_install ];then
