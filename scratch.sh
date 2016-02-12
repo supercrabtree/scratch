@@ -13,6 +13,7 @@ scratch() {
   __rand_char() {
     local rand_number=$(__rand_number)
     local rand_index=$(( $rand_number % $# + 1 ))
+    # this eval is okay because unsetting the functions at the end makes it safe
     eval "printf %s \${$rand_index}"
   }
 
