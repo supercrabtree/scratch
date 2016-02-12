@@ -137,11 +137,8 @@ scratch() {
 
     # if to_install is a local path
     if [ -d $to_install ];then
-      printf '%s\n' "its a folder"
-    else
-      # see if to_install is a repo
-      repos=$(__scratch_create_remote_addresses $to_install)
-      printf '%s %s\n' $(__scratch_create_remote_addresses $to_install)
+      printf '%s\n' "Stop the press!! it's a folder. Sorry not supported yet."
+      return 0
     fi
   fi
 
