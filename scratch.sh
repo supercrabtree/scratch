@@ -86,7 +86,7 @@ scratch() {
   # run script
   # ----------------------------------------------------------------------------
 
-  # set scratch folder, and ensure we can write to it
+  # set scratch folder
   folder=${SCRATCHES_FOLDER:-"$HOME/scratches"}
 
   # if its a dir, and writable by this process
