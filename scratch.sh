@@ -138,6 +138,7 @@ scratch() {
   unset -f __rand_char
   unset -f __rand_word
   unset -f __rand_number
+  unset -f __git_version_at_least
   unset -f __extract_repo_info
 }
 
