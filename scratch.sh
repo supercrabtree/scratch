@@ -89,6 +89,9 @@ scratch() {
   # set scratch folder
   folder=${SCRATCHES_FOLDER:-"$HOME/scratches"}
 
+  # set protocol
+  protocol=${SCRATCHES_PROTOCOL:-"https"}
+
   # if its a dir, and writable by this process
   if [ -d "${folder}" ]; then
     if [ ! -w "${folder}" ]; then
@@ -130,9 +133,27 @@ scratch() {
     local repo_name=$(printf %s $repo_info | sed 's/#.*//')
     local repo_branch=$(printf %s $repo_info | sed 's/.*#//')
 
-    printf 'all:    %s\n' $repo_info
-    printf 'name:   %s\n' $repo_name
-    printf 'branch: %s\n' $repo_branch
+    url_format="https://git::@github.com/$repository_name.git"
+
+    if [ $(__git_version_at_least 2.3) -eq 1 ]; then
+      # Git 2.3.0 introduced $GIT_TERMINAL_PROMPT
+      # which can be used to suppress user prompt
+      export GIT_TERMINAL_PROMPT=0
+      url_format="https://github.com/$repo_name.git"
+    fi
+
+    if [ $protocol = "https" ]; then
+      url_format="https://git::@github.com/$repo_name.git"
+    elif [ $protocol = "ssh" ]; then
+      url_format="git@github.com:$repo_name.git"
+    fi
+
+    git clone --recursive --quiet $url_format "$HOME/.scratch/repos/$repo_name"
+
+    if [ ! -z $repo_branch ]; then
+      $(cd "$HOME/.scratch/repos/$repo_name"; git checkout --quiet $repo_branch)
+    fi
+
   fi
 
   unset -f __rand_char
