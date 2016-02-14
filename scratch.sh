@@ -153,7 +153,15 @@ scratch() {
     if [ ! -z $repo_branch ]; then
       $(cd "$HOME/.scratch/repos/$repo_name"; git checkout --quiet $repo_branch)
     fi
+  fi
 
+  # if `scratch list`
+  if [ $1 = "list" ]; then
+    find "$HOME/.scratch/repos" -mindepth 2 -maxdepth 2 -print0 | while IFS= read -r -d '' folder; do
+      local dirname=$(basename $(dirname "$folder"))
+      local basename=$(basename "$folder")
+      printf '%s/%s\n' "$dirname" "$basename"
+    done
   fi
 
   unset -f __rand_char
