@@ -148,7 +148,7 @@ scratch() {
       url_format="git@github.com:$repo_name.git"
     fi
 
-    git clone --recursive --quiet $url_format "$HOME/.scratch/repos/$repo_name"
+    git clone --recursive $url_format "$HOME/.scratch/repos/$repo_name"
 
     if [ ! -z $repo_branch ]; then
       $(cd "$HOME/.scratch/repos/$repo_name"; git checkout --quiet $repo_branch)
