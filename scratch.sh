@@ -5,6 +5,7 @@ scratch() {
 
   # define varibles to be used in the script
   # ----------------------------------------------------------------------------
+  local version='0.0.1'
   local name folder to_install protocol git_minor_version
 
 
@@ -111,6 +112,11 @@ scratch() {
     cd $name
   fi
 
+  # if `scratch version`
+  if [ "$1" = "version" ]; then
+    printf '%s' $version
+    return 0
+  fi
 
   # if `scratch install`
   if [ "$1" = "install" ]; then
