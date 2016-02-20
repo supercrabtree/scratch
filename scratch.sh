@@ -6,7 +6,7 @@
 scratch() {
 
 
-  # define varibles to be used in the script
+  # define variables to be used in the script
   # ----------------------------------------------------------------------------
   local version='0.0.1'
   local name folder to_install protocol git_minor_version
@@ -17,7 +17,8 @@ scratch() {
   __rand_char() {
     local rand_number=$(__rand_number)
     local rand_index=$(( $rand_number % $# + 1 ))
-    # this eval is okay because unsetting the functions at the end makes it safe
+    # this eval is okay because there is no scope for code injection
+    # and the function is unset at the end
     eval "printf %s \${$rand_index}"
   }
 
