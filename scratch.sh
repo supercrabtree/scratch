@@ -141,7 +141,7 @@ scratch() {
 
     local repo_info=$(__extract_repo_info $to_install)
     local repo_name=$(printf %s $repo_info | sed 's/#.*//')
-    local repo_branch=$(printf %s $repo_info | sed 's/.*#//')
+    local repo_commit_ish=$(printf %s $repo_info | sed 's/.*#//')
 
     url_format="https://git::@github.com/$repository_name.git"
 
@@ -158,11 +158,16 @@ scratch() {
       url_format="git@github.com:$repo_name.git"
     fi
 
-    git clone --recursive $url_format "$HOME/.scratch/repos/$repo_name"
 
-    if [ ! -z $repo_branch ]; then
-      $(cd "$HOME/.scratch/repos/$repo_name"; git checkout --quiet $repo_branch)
+    if [ ! -z $repo_commit_ish ]; then
+      git clone --recursive $url_format "$HOME/.scratch/repos/$repo_name#$repo_commit_ish"
+      $(cd "$HOME/.scratch/repos/$repo_name#$repo_commit_ish"; git checkout --quiet $repo_commit_ish)
+      printf '\n%s\n  %s' "Successfully installed $repo_name#$repo_commit_ish. To use it right now:" "scratch $(basename $repo_name)"
+    else
+      git clone --recursive $url_format "$HOME/.scratch/repos/$repo_name"
+      printf '\n%s\n  %s' "Successfully installed $repo_name. To use it right now:" "scratch $(basename $repo_name)"
     fi
+    return 0
   fi
 
   # if `scratch list`
