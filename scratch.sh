@@ -1,4 +1,7 @@
 #!/bin/sh
+# this script is not entirely posix compliant as it uses 'local' to define
+# function scoped variables. But there are so few shells that don't support it
+# that it may as well be posix.
 
 scratch() {
 
