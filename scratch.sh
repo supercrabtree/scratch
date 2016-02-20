@@ -114,6 +114,7 @@ scratch() {
     cd $folder
     mkdir -p $name
     cd $name
+    return 0
   fi
 
   # if `scratch version`
@@ -177,6 +178,7 @@ scratch() {
       local basename=$(basename "$folder")
       printf '%s/%s\n' "$dirname" "$basename"
     done
+    return 0
   fi
 
   unset -f __rand_char
