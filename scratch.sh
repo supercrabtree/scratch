@@ -104,6 +104,7 @@ scratch() {
     fi
   else
     printf "\n\033[1;32mYour scratches folder\033[0m %s\033[1;32m defined by environment varible SCRATCHES_FOLDER is not a directory\033[0m\n" $folder
+    return 1
   fi
 
   # if no parameters supplied
