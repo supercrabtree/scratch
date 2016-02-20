@@ -83,8 +83,6 @@ scratch() {
       printf '%s#' $repo
       return 0
     fi
-
-
   }
 
 
