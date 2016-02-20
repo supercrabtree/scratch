@@ -179,6 +179,33 @@ scratch() {
     return 0
   fi
 
+  # if `scratch $plugin-that-is-installed`
+  if [ ! -z $1 ]; then
+    installed=""
+    find "$HOME/.scratch/repos" -mindepth 2 -maxdepth 2 -print0 | while IFS= read -r -d '' dir; do
+      local dirname=$(basename $(dirname "$dir"))
+      local basename=$(basename "$dir" | sed 's/#/ /')
+      installed="$installed$(echo -e '\n' $dirname $basename)"
+    done
+    matches=$(echo "$installed" | awk -v to_scratch="$1" '$2== to_scratch {printf "%s %s %s\\n", $1, $2, $3}')
+    number_of_matches=$(echo "$matches" | wc -l | xargs)
+    ((number_of_matches=$number_of_matches-1))
+
+    if [ "$number_of_matches" -eq 0 ]; then
+      printf '%s\n  %s' "Couldn't find $1. Check what you have installed with:" "scratch list"
+      return 1
+    fi
+
+    if [ "$number_of_matches" -eq 1 ]; then
+      to_scratch="$(echo $matches | xargs | sed -e 's/ /\//' -e 's/ /#/')"
+      name="scratch-$1-$(__rand_word)"
+      $(cd $folder && mkdir -p $name)
+      cd "$folder/$name" && cp -R "$HOME/.scratch/repos/$to_scratch/" . && rm -rf .git
+      return 0
+    fi
+
+  fi
+
   unset -f __rand_char
   unset -f __rand_word
   unset -f __rand_number
