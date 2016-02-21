@@ -9,7 +9,7 @@ scratch() {
   # define variables to be used in the script
   # ----------------------------------------------------------------------------
   local version='0.0.1'
-  local name folder to_install protocol git_minor_version
+  local name scratch_dir to_install protocol git_minor_version
 
 
   # define local functions to be used in the script (unset at the end)
@@ -89,17 +89,17 @@ scratch() {
   # run script
   # ----------------------------------------------------------------------------
 
-  # set scratch folder
-  folder=${SCRATCHES_FOLDER:-"$HOME/scratches"}
+  # set scratch scratch_dir
+  scratch_dir=${SCRATCH_DIR:-"$HOME/scratches"}
 
   # set protocol
   protocol=${SCRATCHES_PROTOCOL:-"https"}
 
   # if its a dir, and writable by this process
-  if [ -d "${folder}" ]; then
-    if [ ! -w "${folder}" ]; then
+  if [ -d "${scratch_dir}" ]; then
+    if [ ! -w "${scratch_dir}" ]; then
       printf "\nYour scratch directory %s is not writable. Try:" $scratch_dir
-      printf "  chmod +x %s\n" $folder
+      printf "  chmod +x %s\n" $scratch_dir
       return 1
     fi
   else
@@ -110,7 +110,7 @@ scratch() {
   # if no parameters supplied
   if [ "$#" -eq 0 ]; then
     name=scratch-$(__rand_word)
-    cd $folder
+    cd $scratch_dir &&
     mkdir -p $name
     cd $name
     return 0
@@ -200,8 +200,8 @@ scratch() {
     if [ "$number_of_matches" -eq 1 ]; then
       to_scratch="$(echo $matches | xargs | sed -e 's/ /\//' -e 's/ /#/')"
       name="scratch-$1-$(__rand_word)"
-      $(cd $folder && mkdir -p $name)
-      cd "$folder/$name" && cp -R "$HOME/.scratch/repos/$to_scratch/" . && rm -rf .git
+      $(cd $scratch_dir && mkdir -p $name)
+      cd "$scratch_dir/$name" && cp -R "$HOME/.scratch/repos/$to_scratch/" . && rm -rf .git
       return 0
     fi
 
