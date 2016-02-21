@@ -95,6 +95,13 @@ scratch() {
   # set protocol
   protocol=${SCRATCHES_PROTOCOL:-"https"}
 
+
+  # if `scratch version`
+  if [ "$1" = "version" ] || [ "$1" = "-v" ]; then
+    printf '%s\n' $version
+    return 0
+  fi
+
   # if its a dir, and writable by this process
   if [ -d "${scratch_dir}" ]; then
     if [ ! -w "${scratch_dir}" ]; then
@@ -113,12 +120,6 @@ scratch() {
     cd $scratch_dir &&
     mkdir -p $name
     cd $name
-    return 0
-  fi
-
-  # if `scratch version`
-  if [ "$1" = "version" ]; then
-    printf '%s' $version
     return 0
   fi
 
