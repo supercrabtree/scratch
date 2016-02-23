@@ -126,7 +126,7 @@ scratch() {
   if [ "$#" -eq 0 ]; then
     name="scratch-$(__rand_word)"
     cd $scratch_dir &&
-    mkdir -p $name
+    mkdir -p $name &&
     cd $name
     return 0
   fi
