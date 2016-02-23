@@ -110,8 +110,16 @@ scratch() {
       return 1
     fi
   else
-    printf "\nYour scratch directory %s is not a directory\n" $scratch_dir
-    return 1
+    if [ -f "${scratch_dir}" ]; then
+      printf "\nYour scratch directory %s is not a directory\n" $scratch_dir
+      return 1
+    else
+      mkdir -p $scratch_dir
+      if [ $? -eq 1 ]; then
+        printf "\nFailed to create %s\n" $scratch_dir
+        return 0
+      fi
+    fi
   fi
 
   # if no parameters supplied
