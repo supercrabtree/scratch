@@ -4,18 +4,8 @@
 # Variables
 # ------------------------------------------------------------------------------
 version='0.0.1'
-name=
-scratch_dir=
-to_install=
-protocol=
-git_minor_version=
-dot_scratch_dir="$HOME/.scratch/repos"
-
-# set scratch scratch_dir
 scratch_dir=${SCRATCH_DIR:-"$HOME/scratches"}
-
-# set protocol
-protocol=${SCRATCHES_PROTOCOL:-"https"}
+dot_scratch_dir="$HOME/.scratch/repos"
 
 
 # Local Functions
@@ -190,7 +180,7 @@ install() {
 
 scratch_installed() {
   if [ ! -z $1 ]; then
-    installed=""
+    local installed name
     find "$HOME/.scratch/repos" -mindepth 2 -maxdepth 2 -print0 | while IFS= read -r -d '' dir; do
       local dirname=$(basename $(dirname "$dir"))
       local basename=$(basename "$dir" | sed 's/#/ /')
@@ -219,6 +209,7 @@ scratch_installed() {
 # Scratch command
 # ------------------------------------------------------------------------------
 scratch() {
+  local name
   name="scratch-$(rand_word)"
   cd $scratch_dir &&
   mkdir -p $name &&
