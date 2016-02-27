@@ -1,0 +1,3 @@
+#!/bin/sh
+
+printf '%s\n' 'usage info is great to read today'

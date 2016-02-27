@@ -121,10 +121,6 @@ version() {
   printf '%s\n' $version
 }
 
-help() {
-  printf '%s\n' 'usage info is great'
-}
-
 list() {
   find $dot_scratch_dir -mindepth 2 -maxdepth 2 -print0 | while IFS= read -r -d '' dir; do
     local username=$(basename $(dirname "$dir"))
