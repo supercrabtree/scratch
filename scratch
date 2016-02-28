@@ -1,35 +1,29 @@
 #!/bin/sh
 
 
-# Variables
-# ------------------------------------------------------------------------------
-version='0.0.1'
-scratch_dir=${SCRATCH_DIR:-"$HOME/scratches"}
-dot_scratch_dir="$HOME/.scratch/repos"
-
-
-
-
-# Scratch command
-# ------------------------------------------------------------------------------
 scratch() {
-  local name
-  name="scratch-$(rand_word)"
-  cd $scratch_dir &&
-  mkdir -p $name &&
-  cd $name
-  return 0
+  local version='0.0.1'
+  local scratch_dir=${SCRATCH_DIR:-"$HOME/scratches"}
+  local dot_scratch_dir="$HOME/.scratch/repos"
+  local random_word="$(lib-random-word)"
+
+  if [ "$#" -eq 0 ]; then
+    lib-ensure-dir-exists "$scratch_dir" &&
+      cd "$scratch_dir" &&
+      mkdir -p $random_word &&
+      cd $random_word &&
+      return 0
+    return 1
+  fi
+
+  local command="$1"
+  shift
+
+  case "$command" in
+    -v|--version) scratch-version '0.0.1';;
+    -h|--help)    scratch-help;;
+    list)         scratch-list "$dot_scratch_dir";;
+    install)      scratch-install "$@" || return 1;;
+    # *)          scratch_installed "$@"; exit;;
+  esac
 }
-
-
-# Pass argv
-# ------------------------------------------------------------------------------
-[ "$#" -eq 0 ] && scratch && exit
-case "$1" in
-  -h|--help)    help;                 exit;;
-  -v|--version) version;              exit;;
-  list)         list;                 exit;;
-  install)      install $@;           exit;;
-  # *)            scratch_installed $@; exit;;
-esac
-
