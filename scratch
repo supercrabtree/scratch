@@ -117,14 +117,6 @@ check_dir_exists() {
 
 # Subcommands
 # ------------------------------------------------------------------------------
-list() {
-  find $dot_scratch_dir -mindepth 2 -maxdepth 2 -print0 | while IFS= read -r -d '' dir; do
-    local username=$(basename $(dirname "$dir"))
-    local repo=$(basename "$dir")
-    printf '%s/%s\n' "$username" "$repo"
-  done
-}
-
 install() {
   local to_install=$1
 
