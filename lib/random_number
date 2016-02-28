@@ -1,0 +1,3 @@
+#!/bin/sh
+
+printf %s $(od -An -tu -N2 /dev/urandom)

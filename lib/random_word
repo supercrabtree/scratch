@@ -1,0 +1,7 @@
+#!/bin/sh
+
+word=
+word=$word$(lib/random_character qu wh w r t y p ph d dr f g gr h j k kn l z c ch v b bl n m)
+word=$word$(lib/random_character a ai e ee ei ie oo o u)
+word=$word$(lib/random_character w r t y p s d ff g h k l c b n m)
+printf %s $word
