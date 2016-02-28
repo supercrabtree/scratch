@@ -1,0 +1,45 @@
+#!/bin/sh
+
+repo=
+
+# will extract "username/repo#commit-ish" from the following:
+#
+# supercrabtree/kerpow
+# supercrabtree/kerpow#6c7efc4
+# git@github.com:supercrabtree/kerpow.git
+# https://github.com/supercrabtree/kerpow
+# https://github.com/supercrabtree/kerpow.git
+
+# did they pass in a username/repo
+# i.e. supercrabtree/beepboop
+repo=$(printf %s $1 | sed -n 's/\(^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\/[a-zA-Z0-9\-]*$\)/\1/p')
+if [ ! -z $repo ]; then
+  printf '%s#' $repo
+  return 0
+fi
+
+# did they pass in a username/repo#commit-ish
+# i.e. supercrabtree/beepboop#6c778ccd
+repo=$(printf %s $1 | sed -n 's/\(^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\/[a-zA-Z0-9\-]*#.*$\)/\1/p')
+if [ ! -z $repo ]; then
+  printf '%s' $repo
+  return 0
+fi
+
+# did they pass in an https git repo address
+# i.e. https://github.com/supercrabtree/beepboop.git                         = supercrabtree/beepboop
+# or   https://github.com/supercrabtree/beepboop                             = supercrabtree/beepboop
+# or   https://github.com/supercrabtree/beepboop/so/deep/nested/whatever     = supercrabtree/beepboop
+repo=$(printf %s $1 | sed -n 's/https\:\/\/github.com\/\([^\/]*\)\/\([^\.\/]*\)\(.*\)/\1\/\2/p')
+if [ ! -z $repo ]; then
+  printf '%s#' $repo
+  return 0
+fi
+
+# did they pass in an ssh git repo address
+# i.e. git@github.com:supercrabtree/beepboop.git = supercrabtree/beepboop
+repo=$(printf %s $1 | sed -n 's/git@github.com:\([^\/]*\)\/\([^\/]*\)\.git/\1\/\2/p')
+if [ ! -z $repo ]; then
+  printf '%s#' $repo
+  return 0
+fi
