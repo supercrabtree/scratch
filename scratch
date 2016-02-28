@@ -12,51 +12,6 @@ dot_scratch_dir="$HOME/.scratch/repos"
 
 # Subcommands
 # ------------------------------------------------------------------------------
-install() {
-  local to_install=$1
-
-  # Die if to_install is empty
-  if [ -z "$to_install" ]; then
-    printf '%s\n' "Erm, what do you want to install? (You need another parameter)"
-    exit 1
-  fi
-
-  # Die if to_install is a local folder
-  if [ -d $to_install ]; then
-    printf '%s\n' "Stop the press!! it's a folder. Sorry not supported yet."
-    exit 1
-  fi
-
-  local repo_info=$(extract_repo_info $to_install)
-  local repo_name=$(printf %s $repo_info | sed 's/#.*//')
-  local repo_commit_ish=$(printf %s $repo_info | sed 's/.*#//')
-
-  url_format="https://git::@github.com/$repository_name.git"
-
-  if [ $(git_version_at_least 2.3) -eq 1 ]; then
-    # Git 2.3.0 introduced $GIT_TERMINAL_PROMPT
-    # which can be used to suppress user prompt
-    export GIT_TERMINAL_PROMPT=0
-    url_format="https://github.com/$repo_name.git"
-  fi
-
-  if [ $protocol = "https" ]; then
-    url_format="https://git::@github.com/$repo_name.git"
-  elif [ $protocol = "ssh" ]; then
-    url_format="git@github.com:$repo_name.git"
-  fi
-
-  if [ ! -z $repo_commit_ish ]; then
-    git clone --recursive $url_format "$HOME/.scratch/repos/$repo_name#$repo_commit_ish"
-    $(cd "$HOME/.scratch/repos/$repo_name#$repo_commit_ish"; git checkout --quiet $repo_commit_ish)
-    printf '\n%s\n  %s' "Successfully installed $repo_name#$repo_commit_ish. To use it right now:" "scratch $(basename $repo_name)"
-  else
-    git clone --recursive $url_format "$HOME/.scratch/repos/$repo_name"
-    printf '\n%s\n  %s' "Successfully installed $repo_name. To use it right now:" "scratch $(basename $repo_name)"
-  fi
-  return 0
-}
-
 scratch_installed() {
   if [ ! -z $1 ]; then
     local installed name
