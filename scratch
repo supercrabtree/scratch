@@ -9,9 +9,8 @@ scratch() {
 
   if [ "$#" -eq 0 ]; then
     lib-ensure-dir-exists "$scratch_dir" &&
-      cd "$scratch_dir" &&
-      mkdir -p $random_word &&
-      cd $random_word &&
+      $(cd "$scratch_dir" && mkdir -p $random_word) &&
+      cd "$scratch_dir/$random_word" &&
       return 0
     return 1
   fi
