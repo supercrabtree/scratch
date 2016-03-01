@@ -12,24 +12,24 @@ scratch() {
 
   # Local Functions
   # ----------------------------------------------------------------------------
-  rand_char() {
-    local rand_number=$(rand_number)
-    local rand_index=$(( $rand_number % $# + 1 ))
+  _random_char() {
+    local random_number=$(_random_number)
+    local random_index=$(( $random_number % $# + 1 ))
     # this eval is okay because there is no scope for code injection
     # and the function is unset at the end
-    eval "printf %s \${$rand_index}"
+    eval "printf '%s' \${$random_index}"
   }
 
-  rand_number() {
-    printf %s $(od -An -tu -N2 /dev/urandom)
+  _random_number() {
+    printf '%s' $(od -An -tu -N2 /dev/urandom)
   }
 
-  rand_word() {
+  _random_word() {
     local word
-    word=$word$(rand_char qu wh w r t y p ph d dr f g gr h j k kn l z c ch v b bl n m)
-    word=$word$(rand_char a ai e ee ei ie oo o u)
-    word=$word$(rand_char w r t y p s d ff g h k l c b n m)
-    printf %s $word
+    word=$word$(_random_char qu wh w r t y p ph d dr f g gr h j k kn l z c ch v b bl n m)
+    word=$word$(_random_char a ai e ee ei ie oo o u)
+    word=$word$(_random_char w r t y p s d ff g h k l c b n m)
+    printf '%s' $word
   }
 
   git_version_at_least() {
