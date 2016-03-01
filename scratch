@@ -210,24 +210,32 @@ scratch() {
   }
 
 
-  # Scratch command
-  # ------------------------------------------------------------------------------
-  local name
-  name="scratch-$(rand_word)"
-  cd $scratch_dir &&
-  mkdir -p $name &&
-  cd $name
-  return 0
+  _scratch () {
+    local random_word=$(_random_word)
+    _ensure_dir_exists "$scratch_dir" &&
+      $(cd "$scratch_dir" && mkdir -p $random_word) &&
+      cd "$scratch_dir/$random_word" &&
+      return 0
+    return 1
+  }
 
 
-  # Pass argv
+  # Pass argv / run command
   # ------------------------------------------------------------------------------
-  [ "$#" -eq 0 ] && scratch && exit
-  case "$1" in
-    -h|--help)    help;                 exit;;
-    -v|--version) version;              exit;;
-    list)         list;                 exit;;
-    install)      install $@;           exit;;
-    # *)            scratch_installed $@; exit;;
-  esac
+  if [ "$#" -eq 0 ]; then
+    _scratch
+  else
+    local command="$1"
+    shift
+    case "$command" in
+      -v|--version) _version '0.0.1';;
+      -h|--help)    _help;;
+      list)         _list "$dot_scratch_dir";;
+      # install)      _install "$@";;
+      # *)          scratch_installed "$@"; exit;;
+    esac
+  fi
+
+
+
 }
