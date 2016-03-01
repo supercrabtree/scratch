@@ -142,14 +142,14 @@ scratch() {
 
     # Die if to_install is empty
     if [ -z "$to_install" ]; then
-      printf '%s\n' "Erm, what do you want to install? (You need another parameter)"
-      exit 1
+      printf '%s\n' "Erm, what do you want to install? (You need another parameter)" 1>&2
+      return 1
     fi
 
     # Die if to_install is a local folder
     if [ -d $to_install ]; then
-      printf '%s\n' "Stop the press!! it's a folder. Sorry not supported yet."
-      exit 1
+      printf '%s\n' "Stop the press!! it's a folder. Sorry not supported yet." 1>&2
+      return 1
     fi
 
     local repo_info=$(extract_repo_info $to_install)
