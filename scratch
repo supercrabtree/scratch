@@ -236,6 +236,25 @@ scratch() {
     esac
   fi
 
+  local returncode=$?
 
 
+  # Cleanup
+  # ------------------------------------------------------------------------------
+  unset -f _random_char
+  unset -f _random_number
+  unset -f _random_word
+  unset -f _git_version_at_least
+  unset -f _extract_repo_info
+  unset -f _ensure_dir_exists
+  unset -f _version
+  unset -f _help
+  unset -f _list
+  unset -f _install
+  unset -f _scratch_installed
+  unset -f _scratch
+
+  return returncode
 }
+
+
