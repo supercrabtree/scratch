@@ -91,9 +91,9 @@ scratch() {
 
       # but not writable by this process
       if [ ! -w "$dir" ]; then
-        printf "\nYour scratch directory %s is not writable. Try:" "$dir"
-        printf "  chmod +x %s\n" "$dir"
-        exit 1
+        printf "\nYour scratch directory %s is not writable. Try:\n" "$dir" 1>&2
+        printf "  chmod +x %s\n" "$dir" 1>&2
+        return 1
       fi
 
     # or it is not a directory
@@ -101,17 +101,19 @@ scratch() {
 
       # but is instead a file
       if [ -f "$dir" ]; then
-        printf "\nYour scratch directory %s is not a directory\n" "$dir"
-        exit 1
+        printf "\nYour scratch directory %s is not a directory\n" "$dir" 1>&2
+        return 1
 
       # or just doesn't exist
       else
         mkdir -p "$dir"
         if [ $? -eq 1 ]; then
-          printf "\nFailed to create %s\n" "$dir"
-          exit 1
+          printf "\nFailed to create %s\n" "$dir" 1>&22>&1
+          return 1
         fi
+
         # success! directory now exists
+        return 0
       fi
     fi
   }
