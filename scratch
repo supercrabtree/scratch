@@ -108,7 +108,7 @@ scratch() {
       else
         mkdir -p "$dir"
         if [ $? -eq 1 ]; then
-          printf "\nFailed to create %s\n" "$dir" 1>&22>&1
+          printf "\nFailed to create %s\n" "$dir" 1>&2
           return 1
         fi
 
