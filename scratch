@@ -32,12 +32,12 @@ scratch() {
     printf '%s' $word
   }
 
-  git_version_at_least() {
+  _git_version_at_least() {
     local minor_git_version=$(git --version | sed 's/\(git version \)\([0-9]*\.[0-9]*\)\(.*\)/\2/')
     echo "$1 < $minor_git_version" | bc
   }
 
-  extract_repo_info() {
+  _extract_repo_info() {
     local repo
 
     # will extract "username/repo#commit-ish" from the following:
@@ -121,15 +121,15 @@ scratch() {
 
   # Subcommands
   # ------------------------------------------------------------------------------
-  version() {
+  _version() {
     printf '%s\n' $version
   }
 
-  help() {
+  _help() {
     printf '%s\n' 'usage info is great'
   }
 
-  list() {
+  _list() {
     find $dot_scratch_dir -mindepth 2 -maxdepth 2 -print0 | while IFS= read -r -d '' dir; do
       local username=$(basename $(dirname "$dir"))
       local repo=$(basename "$dir")
@@ -137,7 +137,7 @@ scratch() {
     done
   }
 
-  install() {
+  _install() {
     local to_install=$1
 
     # Die if to_install is empty
@@ -182,7 +182,7 @@ scratch() {
     return 0
   }
 
-  scratch_installed() {
+  _scratch_installed() {
     if [ ! -z $1 ]; then
       local installed name
       find "$HOME/.scratch/repos" -mindepth 2 -maxdepth 2 -print0 | while IFS= read -r -d '' dir; do
