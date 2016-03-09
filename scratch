@@ -213,12 +213,11 @@ scratch() {
     _scratch
   else
     local command="$1"
-    shift
     case "$command" in
       -v|--version) _version '0.0.1';;
       -h|--help)    _help;;
       list)         _list "$dot_scratch_dir";;
-      install)      _install "$@";;
+      install)      shift; _install "$@";;
       # *)          scratch_installed "$@"; exit;;
     esac
   fi
