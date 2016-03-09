@@ -228,7 +228,7 @@ scratch() {
       -v|--version) _version '0.0.1';;
       -h|--help)    _help;;
       list)         _list "$dot_scratch_dir";;
-      # install)      _install "$@";;
+      install)      _install "$@";;
       # *)          scratch_installed "$@"; exit;;
     esac
   fi
