@@ -92,7 +92,7 @@ scratch() {
       # but not writable by this process
       if [ ! -w "$dir" ]; then
         printf "\nYour scratch directory %s is not writable. Try:\n" "$dir" 1>&2
-        printf "  chmod +x %s\n" "$dir" 1>&2
+        printf "  chmod +w %s\n" "$dir" 1>&2
         return 1
       fi
 
