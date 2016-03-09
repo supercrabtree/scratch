@@ -112,6 +112,14 @@ scratch() {
     fi
   }
 
+  _scratch_local_scratch() {
+    local to_scratch="$(printf $1 | sed -e 's/ /\//' -e 's/ /#/')"
+    local slugged="$(printf $1 | sed -e 's/ /-/' -e 's/ /#/')"
+    local name="$slugged-$(_random_word)"
+    $(cd $scratch_dir && mkdir $name) || return 1
+    cd "$scratch_dir/$name" && cp -R "$HOME/.scratch/repos/$to_scratch/" . && rm -rf .git
+  }
+
 
   # Subcommands
   # ------------------------------------------------------------------------------
@@ -188,11 +196,17 @@ scratch() {
     done
     matches=$(printf "$installed" | awk -v to_scratch="$1" '$2== to_scratch {printf "%s %s %s\\n", $1, $2, $3}')
     number_of_matches=$(printf "$matches" | wc -l)
-    echo "$number_of_matches"
+
+    # trim whitespace
+    matches=$(printf "$matches" | xargs)
 
     if [ "$number_of_matches" -eq 0 ]; then
       printf '%s\n  %s' "Couldn't find $1. Check what you have installed with:" "scratch list" 1>&2
       return 1
+    fi
+
+    if [ "$number_of_matches" -eq 1 ]; then
+      _scratch_local_scratch $matches
     fi
   }
 
@@ -218,7 +232,7 @@ scratch() {
       -h|--help)    _help;;
       list)         _list "$dot_scratch_dir";;
       install)      shift; _install "$@";;
-      # *)          scratch_installed "$@"; exit;;
+      *)            _scratch_installed "$@";;
     esac
   fi
 
