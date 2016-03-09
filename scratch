@@ -40,25 +40,17 @@ scratch() {
   _extract_repo_info() {
     local repo
 
-    # will extract "username/repo#commit-ish" from the following:
+    # will extract "username/repo" from the following:
     #
     # supercrabtree/kerpow
-    # supercrabtree/kerpow#6c7efc4
     # git@github.com:supercrabtree/kerpow.git
     # https://github.com/supercrabtree/kerpow
+    # https://github.com/supercrabtree/kerpow/so/deep/nested/whatever
     # https://github.com/supercrabtree/kerpow.git
 
     # did they pass in a username/repo
     # i.e. supercrabtree/beepboop
     repo=$(printf %s $1 | sed -n 's/\(^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\/[a-zA-Z0-9\-]*$\)/\1/p')
-    if [ ! -z $repo ]; then
-      printf '%s#' $repo
-      return 0
-    fi
-
-    # did they pass in a username/repo#commit-ish
-    # i.e. supercrabtree/beepboop#6c778ccd
-    repo=$(printf %s $1 | sed -n 's/\(^[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]\/[a-zA-Z0-9\-]*#.*$\)/\1/p')
     if [ ! -z $repo ]; then
       printf '%s' $repo
       return 0
@@ -70,7 +62,7 @@ scratch() {
     # or   https://github.com/supercrabtree/beepboop/so/deep/nested/whatever     = supercrabtree/beepboop
     repo=$(printf %s $1 | sed -n 's/https\:\/\/github.com\/\([^\/]*\)\/\([^\.\/]*\)\(.*\)/\1\/\2/p')
     if [ ! -z $repo ]; then
-      printf '%s#' $repo
+      printf '%s' $repo
       return 0
     fi
 
@@ -78,9 +70,11 @@ scratch() {
     # i.e. git@github.com:supercrabtree/beepboop.git = supercrabtree/beepboop
     repo=$(printf %s $1 | sed -n 's/git@github.com:\([^\/]*\)\/\([^\/]*\)\.git/\1\/\2/p')
     if [ ! -z $repo ]; then
-      printf '%s#' $repo
+      printf '%s' $repo
       return 0
     fi
+
+    return 1
   }
 
   _ensure_dir_exists() {
@@ -138,46 +132,49 @@ scratch() {
   }
 
   _install() {
-    local to_install=$1
+    local repo=$1
+    local commit_ish=$2
 
-    # Die if to_install is empty
-    if [ -z "$to_install" ]; then
+    # Die if repo is empty
+    if [ -z "$repo" ]; then
       printf '%s\n' "Erm, what do you want to install? (You need another parameter)" 1>&2
       return 1
     fi
 
-    # Die if to_install is a local folder
-    if [ -d $to_install ]; then
-      printf '%s\n' "Stop the press!! it's a folder. Sorry not supported yet." 1>&2
+    # Die if repo is a local folder
+    if [ -d $repo ]; then
+      printf '%s\n' "Stop the press!! it's a folder. Sorry not supported yet. Must be a remote repo for now." 1>&2
       return 1
     fi
 
-    local repo_info=$(extract_repo_info $to_install)
-    local repo_name=$(printf %s $repo_info | sed 's/#.*//')
-    local repo_commit_ish=$(printf %s $repo_info | sed 's/.*#//')
+    local repo_name=$(_extract_repo_info $repo)
 
-    url_format="https://git::@github.com/$repository_name.git"
+    if [ -z $repo_name ]; then
+      printf 'Could not find a repo matching %s\n' "$repo" 1>&2
+      printf 'Run: scratch --help to see the supported formats\n' 1>&2
+      return 1
+    fi
 
-    if [ $(git_version_at_least 2.3) -eq 1 ]; then
+    local repo_url="https://git::@github.com/$repo_name.git"
+
+    if [ $(_git_version_at_least 2.3) -eq 1 ]; then
       # Git 2.3.0 introduced $GIT_TERMINAL_PROMPT
       # which can be used to suppress user prompt
       export GIT_TERMINAL_PROMPT=0
-      url_format="https://github.com/$repo_name.git"
+      repo_url="https://github.com/$repo_name.git"
     fi
 
-    if [ $protocol = "https" ]; then
-      url_format="https://git::@github.com/$repo_name.git"
-    elif [ $protocol = "ssh" ]; then
-      url_format="git@github.com:$repo_name.git"
-    fi
 
-    if [ ! -z $repo_commit_ish ]; then
-      git clone --recursive $url_format "$HOME/.scratch/repos/$repo_name#$repo_commit_ish"
-      $(cd "$HOME/.scratch/repos/$repo_name#$repo_commit_ish"; git checkout --quiet $repo_commit_ish)
-      printf '\n%s\n  %s' "Successfully installed $repo_name#$repo_commit_ish. To use it right now:" "scratch $(basename $repo_name)"
+    if [ ! -z $commit_ish ]; then
+      git clone --recursive $repo_url "$dot_scratch_dir/$repo_name#$commit_ish"
+      if [ $? -eq 0 ]; then
+        $(cd "$dot_scratch_dir/$repo_name#$commit_ish"; git checkout --quiet $commit_ish)
+        printf '\n%s\n  %s' "Successfully installed $repo_name#$repo_commit_ish. To use it right now:" "scratch $(basename $repo_name)"
+      else
+      fi
     else
-      git clone --recursive $url_format "$HOME/.scratch/repos/$repo_name"
-      printf '\n%s\n  %s' "Successfully installed $repo_name. To use it right now:" "scratch $(basename $repo_name)"
+      git clone --recursive $repo_url "$dot_scratch_dir/$repo_name"
+      [ $? -eq 0 ] && printf '\n%s\n  %s' "Successfully installed $repo_name. To use it right now:" "scratch $(basename $repo_name)"
     fi
     return 0
   }
@@ -256,5 +253,4 @@ scratch() {
 
   return returncode
 }
-
 
